@@ -1,0 +1,155 @@
+#nav_bar {
+    padding: 0;
+}
+
+nav div {
+    padding: 10px;
+    background-color: #304A57;
+}
+
+#dashboard, #customer, #item, #order {
+    font-weight: 600;
+    color: #1f1f1f;
+}
+.card {
+    border: none;
+    display: flex;
+    align-items: center;
+}
+
+.card_body {
+    width: 90%;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #1f1f1f;
+    border-radius: 20px;
+    color: white;
+}
+
+
+body{
+    overflow-x: hidden;
+    background-color: #D1C0B8;
+
+}
+
+.imgDashbord{
+    position: relative;
+    width: 1000px;
+    height: 450px;
+    left: 180px;
+    bottom: 20px;
+}
+
+* {
+    position: relative;
+}
+#nav_bar {
+    padding: 0;
+}
+
+nav div {
+    padding: 10px;
+    background-color: #304A57;
+}
+
+#dashboard, #customer, #item, #order {
+    font-weight: 600;
+    color: #1f1f1f;
+
+}
+
+#search {
+    border: 1px solid black;
+    border-radius: 50px;
+    height: 50px;
+}
+
+.search-btn {
+    font-size: 2.2rem;
+    position: absolute;
+    top: calc(50% - 1.2rem);
+    margin: auto;
+    right: 20px;
+}
+
+#id, #name, #address, #salary, #price, #qty {
+    border: 1px solid black;
+}
+
+.buttons button {
+    width: 32%;
+}
+
+table tbody, table thead {
+    border: 1px solid black;
+}
+body{
+    background-color: #D1C0B8;
+}
+
+
+#nav_bar {
+    padding: 0;
+}
+
+nav div {
+    padding: 10px;
+    background-color: #304A57;
+}
+
+#dashboard, #customer, #item, #order {
+    font-weight: 600;
+    color: #1f1f1f;
+}
+
+body{
+    background-color: #D1C0B8;
+}
+
+#id, #name, #address, #salary, #price, #qty, #qty-on-hand, #cash, #discount {
+    border: 1px solid black;
+}
+
+table tbody, table thead {
+    border: 1px solid black;
+}
+
+#add-btn {
+    width: 100%;
+}
+
+.customer-pane {
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 15px;
+}
+
+.item-pane {
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 15px;
+    margin-right: 15px;
+}
+
+.order-pane {
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 15px;
+}
+
+.total {
+    border: 1px solid black;
+    border-radius: 15px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+}
