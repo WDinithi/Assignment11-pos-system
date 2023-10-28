@@ -1,33 +1,3 @@
-/*
-import {customerModel} from "../model/customer-model";
-// import {customer_db} from ;
-
-$("#customer-save-btn").on('click', () => {
-    event.preventDefault();
-    console.log("clicked save button");
-});
-
-$("#customer-save-btn").on('click', () => {
-    event.preventDefault(); // Prevent the default behavior of the button click
-    console.log("clicked save button");
-
-    var customerId = $("#cusId").val();
-    var customerName = $("#cusName").val();
-    var customerAddress = $("#cusAddress").val();
-    var customerSalary = $("#cusSalary").val();
-
-    var customer = new customerModel(
-        customerId,
-        customerName,
-        customerAddress,
-        customerSalary
-    );
-
-    console.log(customer);
-});
-
-*/
-
 import {CustomerModel} from "../model/CustomerModel";
 import {customer_db} from "../db/db" ;
 
