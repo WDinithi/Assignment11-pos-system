@@ -1,3 +1,11 @@
+#back{
+    position: relative;
+    right: 93px;
+    width: 1480px;
+    height: 526px;
+    bottom: 46px;
+}
+
 #nav_bar {
     padding: 0;
 }

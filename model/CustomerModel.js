@@ -1,9 +1,9 @@
-export class CustomerModel {
-    constructor(customer_id, customer_name, customer_address, customer_salary) {
-        this.customer_id = customer_id;
-        this.customer_name = customer_name;
-        this.customer_address = customer_address;
-        this.customer_salary = customer_salary;
+export class CustomerModel{
 
+    constructor(id, name, address, contact) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.contact = contact;
     }
 }

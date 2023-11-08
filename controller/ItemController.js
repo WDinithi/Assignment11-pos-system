@@ -1,27 +1,30 @@
-import {Item} from "../model/ItemModel";
-import {customer_db, item_db} from "../db/db";
+import {ItemModel} from "../model/ItemModel.js";
+import {item_db} from "../db/db.js";
 
 let row_index = null;
+
 const loadId = () =>{
     if(item_db.length == 0){
         $("#itemId").val("I001");
     }else{
-        $("#itemId").val(generateNewId(item_db[item_db.length - 1].item_id));
+        $("#itemId").val(generateNewId(item_db[item_db.length - 1].id));
     }
 };
 
 loadId();
-const loadItemTable = () => {
+
+const loadItemData = () => {
     $("#itemTable").html("");
     item_db.map((item) => {
-        $("#itemTable").append(`<tr><td>${item.item_id}</td><td>${item.item_name}</td><td>${item.item_price}</td><td>${item.item_qty}</td></tr>`);
+        $("#itemTable").append(`<tr><td>${item.id}</td><td>${item.name}</td><td>${item.price}</td><td>${item.qty}</td></tr>`);
     });
 };
 
-$(".item").on('click', ()=> loadItemTable());
+$(".item").on('click', ()=> loadItemData());
 
 //save
-$("#item-save").on('click', () => {
+$("#item_save").on('click', () => {
+    console.log("ABC")
     let id = $("#itemId").val(),
         name = $("#itemName").val(),
         price = Number.parseFloat($("#itemPrice").val()),
@@ -29,11 +32,11 @@ $("#item-save").on('click', () => {
 
     if(!checkValidation(id, name, price, qty)) return;
 
-    let item = new Item(id, name, price, qty);
+    let item = new ItemModel(id, name, price, qty);
     item_db.push(item);
 
-    loadItemTable();
-    $("#item-reset").click();
+    loadItemData();
+    $("#item_reset").click();
     loadId();
     Swal.fire({
         icon: 'success',
@@ -52,11 +55,11 @@ $("#itemTable").on('click', "tr", function(){
     $("#itemPrice").val( Number.parseFloat($(this).find("td:nth-child(3)").text() ) );
     $("#itemQty").val( Number.parseInt( $(this).find("td:nth-child(4)").text() ) );
 
-    row_index = item_db.findIndex((item => item.item_id == selectedId));
+    row_index = item_db.findIndex((item => item.id == selectedId));
 });
 
 //update
-$("#item-update").on('click', () => {
+$("#item_update").on('click', () => {
     let id = $("#itemId").val(),
         name = $("#itemName").val(),
         price = Number.parseFloat($("#itemPrice").val()),
@@ -64,13 +67,13 @@ $("#item-update").on('click', () => {
 
     if(!checkValidation(id, name, price, qty)) return;
 
-    item_db[row_index].item_id = id;
-    item_db[row_index].item_name = name;
-    item_db[row_index].item_price = price;
-    item_db[row_index].item_qty = qty;
+    item_db[row_index].id = id;
+    item_db[row_index].name = name;
+    item_db[row_index].price = price;
+    item_db[row_index].qty = qty;
 
-    loadItemTable();
-    $("#item-reset").click();
+    loadItemData();
+    $("#item_reset").click();
     row_index = null;
     loadId();
     Swal.fire({
@@ -82,7 +85,7 @@ $("#item-update").on('click', () => {
 });
 
 //remove
-$("#item-delete").on('click', () => {
+$("#item_delete").on('click', () => {
     if (row_index == null) return;
     Swal.fire({
         title: 'Are you sure?',
@@ -95,8 +98,8 @@ $("#item-delete").on('click', () => {
     }).then((result) => {
         if (result.isConfirmed) {
             item_db.splice(row_index, 1);
-            loadItemTable();
-            $("#item-reset").click();
+            loadItemData();
+            $("#item_reset").click();
             loadId();
             Swal.fire(
                 'Deleted!',
@@ -146,6 +149,6 @@ function generateNewId(lastId) {
     return newId;
 }
 
-$("#item-reset").on('click', ()=>{
+$("#item_reset").on('click', ()=>{
     setTimeout(loadId, 10);
 })

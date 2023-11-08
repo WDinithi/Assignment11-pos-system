@@ -1,26 +1,27 @@
-import {OrderModel} from "../model/orderModel";
-import {customer_db} from "../db/db";
-import {item_db} from "../db/db";
-import {order_db} from "../db/db";
-import {Item} from "../model/ItemModel";
+import {OrderModel} from "../model/OrderModel.js";
+import {customer_db} from "../db/db.js";
+import {item_db} from "../db/db.js";
+import {order_db} from "../db/db.js";
+import {ItemModel} from "../model/ItemModel.js";
 
 let cusRowIndex = null;
 let itemRowIndex = null;
 let total = 0;
 let subTotal = 0;
+let sum = 0;
 let tempItems = [];
 let addedItems = [];
 
-const loadAddItemTable = ()=>{
+const loadAddItemData = ()=>{
     $("#orderedItemTBody").html("");
     addedItems.map((item) => {
         $("#orderedItemTBody").append(`
                     <tr>
-                        <td> ${item.item_id} </td>
-                        <td> ${item.item_name} </td>
-                        <td> ${item.item_price} </td>
-                        <td> ${item.item_qty} </td>
-                        <td> ${item.item_price * item.item_qty} </td>
+                        <td> ${item.id} </td>
+                        <td> ${item.name} </td>
+                        <td> ${item.price} </td>
+                        <td> ${item.qty} </td>
+                        <td> ${item.price * item.qty} </td>
                     </tr>
     `   );
     })
@@ -30,54 +31,48 @@ const loadIdDate = () =>{
     if(customer_db.length == 0){
         $("#orderId").val("OD001");
     }else{
-        $("#orderId").val(generateNewId(order_db[order_db.length - 1].orderId));
+        $("#orderId").val(generateNewId(order_db[order_db.length - 1].id));
     }
 
     $("#date").val(new Date().toLocaleDateString('en-GB'));
 };
+
 loadIdDate();
 
-//loadCustomers
-$(".order").on('click', ()=>{
-    $("#orderCusId").html("");
-    customers.map((customer) => {
-        $('#orderCusId').append($('<option>', {
-            value: customer.customer_id,
-            text: customer.customer_id
-        }));
+//lode customer to combobox
+export const loadCustomers = () => {
+
+    $("#orderCusId").empty();
+    customer_db.map((orderCusId) => {
+        $("#orderCusId").append(`<option value="${orderCusId.id}">${orderCusId.id}</option>`);
     });
-    $("#orderCusId").val("");
-});
+};
+
+//lode Items to combobox
+export const loadItems = () => {
+
+    $("#orderItemId").empty();
+    item_db.map((orderItemId) => {
+        $("#orderItemId").append(`<option value="${orderItemId.id}">${orderItemId.id}</option>`);
+    });
+};
 
 //setCustomerDetails
 $("#customerSelector").on('click','select', function (){
-    cusRowIndex = customer_db.findIndex(customer => customer.customer_id === $(this).val());
-    if(cusRowIndex == -1) return;
-    $("#orderCusName").val( customer_db[cusRowIndex].customer_name );
-    $("#orderCusAddress").val( customer_db[cusRowIndex].customer_address );
-    $("#orderCusSalary").val( customer_db[cusRowIndex].customer_salary );
-
-});
-
-//loadItems
-$(".order").on('click', ()=> {
-    $("#orderItemId").html("");
-    items.map((item) => {
-        $('#orderItemId').append($('<option>', {
-            value: item.id,
-            text: item.id
-        }));
-    });
-    $("#orderItemId").val("");
+    cusRowIndex = customer_db.findIndex(customer => customer.id === $(this).val());
+    if(cusRowIndex === -1) return;
+    $("#orderCusName").val( customer_db[cusRowIndex].name );
+    $("#orderCusAddress").val( customer_db[cusRowIndex].address );
+    $("#orderCusContact").val( customer_db[cusRowIndex].contact );
 });
 
 //setItemDetails
 $("#itemSelector").on('click','select', function (){
-    itemRowIndex = item_db.findIndex(item => item.item_id === $(this).val());
+    itemRowIndex = item_db.findIndex(item => item.id === $(this).val());
     if(itemRowIndex == -1) return;
-    $("#orderItemName").val( item_db[itemRowIndex].item_name );
-    $("#orderItemPrice").val( item_db[itemRowIndex].item_price );
-    $("#qty-on-hand").val( item_db[itemRowIndex].item_qty );
+    $("#orderItemName").val( item_db[itemRowIndex].name );
+    $("#orderItemPrice").val( item_db[itemRowIndex].price );
+    $("#qty-on-hand").val( item_db[itemRowIndex].qty );
 });
 
 //add-item action
@@ -88,28 +83,28 @@ $("#add-item-btn").on('click', ()=>{
         qty = Number.parseInt($("#orderItemQty").val()),
         itemTotal = price * qty;
 
-    if(qty > item_db[itemRowIndex].item_qty || !qty) {
+    if(qty > item_db[itemRowIndex].qty || !qty) {
         showErrorAlert("Please enter a valid qty..Need to be lower than or equal to qty on hand");
         return;
     }
 
-    let existingItem = addedItems.findIndex(item => item.item_id === id);
+    let existingItem = addedItems.findIndex(item => item.id === id);
     console.log("index : " + existingItem);
 
     if(existingItem < 0){
-        addedItems.push(new Item(id, name, price, qty, itemTotal));
+        addedItems.push(new ItemModel(id, name, price, qty, itemTotal));
     }else {
         addedItems[existingItem].qty += qty;
     }
-    loadAddItemTable();
+    loadAddItemData();
 
     tempItems.push(item_db[itemRowIndex]);
-    item_db[itemRowIndex].item_qty -= qty;
-    $("#qty-on-hand").val( item_db[itemRowIndex].item_qty );
-
-    subTotal += itemTotal;
-    $("#subTotal").text(`Sub Total: Rs. ${subTotal}`);
+    item_db[itemRowIndex].qty -= qty;
+    $("#qty-on-hand").val( item_db[itemRowIndex].qty );
+    sum += itemTotal;
+    $("#sum").text(`Total: Rs. ${sum}`);
 });
+
 
 //show balance
 $("#cash").on('input', ()=>{
@@ -118,8 +113,15 @@ $("#cash").on('input', ()=>{
     $("#balance").val(Number.parseFloat($("#cash").val()) - Number.parseFloat($("#subTotal").text().slice(15)));
 })
 
+$("#discount").on('input', () => {
+    let subTotals = Number.parseFloat($("#sum").text().slice(11)); // Extract the Sub Total value
+    let discount = Number.parseFloat($("#discount").val()) || 0; // Get the discount input value (default to 0 if not a valid number)
+    let discountedTotal = subTotals - (subTotals * discount / 100); // Calculate the discounted total
+    $("#subTotal").text(`Sub Total: Rs. ${discountedTotal.toFixed(2)}`); // Update the Total with the discounted value
+});
 //save order
 $("#order-btn").on('click', ()=>{
+    sum =0;
     console.log("ordered");
 
     let orderId = $("#orderId").val(),
@@ -141,8 +143,8 @@ $("#order-btn").on('click', ()=>{
         }).then((result) => {
             if (result.isConfirmed) {
 
-                let order = new Order(orderId, date, customer, items, discount, total);
-                orders.push(order);
+                let order = new OrderModel(orderId, date, customer, items, discount, total);
+                order_db.push(order);
 
                 console.log(order);
 
@@ -152,7 +154,7 @@ $("#order-btn").on('click', ()=>{
                 $("select").val("");
                 loadIdDate();
                 addedItems = [];
-                loadAddItemTable();
+                loadAddItemData();
                 Swal.fire(
                     `Rs: ${total}`,
                     'The Order has been placed!',
@@ -161,6 +163,8 @@ $("#order-btn").on('click', ()=>{
             }
         })
     }
+    $("#subTotal").text('SubTotal: Rs.000.00');
+    $("#sum").text('Total: Rs.000.00');
 });
 
 //cancel order
@@ -177,15 +181,16 @@ $("#cancel-order-btn").on('click', ()=>{
         if (result.isConfirmed) {
 
             addedItems.map((addedItem) =>{
-                let i = item_db.findIndex(item => item.item_id === addedItem.item_id);
+                let i = item_db.findIndex(item => item.id === addedItem.id);
                 item_db[i].qty += addedItem.qty;
             });
 
             $("#order-section form").trigger('reset');
             $("select").val("");;
-            $("#subTotal").text('Sub Total: Rs. 0000.00');
+            $("#subTotal").text('SubTotal: Rs.000.00');
+            $("#sum").text('Total: Rs.000.00');
             addedItems = [];
-            loadAddItemTable();
+            loadAddItemData();
 
             Swal.fire(
                 `Canceled`,
@@ -202,7 +207,7 @@ function checkValidation(orderId, date, customer, items, total, discount) {
         showErrorAlert("Please select a customer to place order");
         return false;
     }
-    if(item_db.length == 0){
+    if(items.length == 0){
         showErrorAlert("Please select a item/items to place order");
         return false;
     }

@@ -1,3 +1,3 @@
-export let customer_db=[];
-export let item_db=[];
-export let order_db=[];
+export var customer_db = [];
+export var item_db = [];
+export var order_db = [];
